@@ -1,6 +1,7 @@
 /*
 	LookupPort
 	The network argument is a string such as "tcp" or "udp", while the service is a string such as "telnet" or "domain" (for DNS).
+	go run lookup_port.go tcp telnet
 */
 
 package main

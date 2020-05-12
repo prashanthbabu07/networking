@@ -1,3 +1,8 @@
+/*
+	ResolveIP
+	go run ip.go 127.0.0.1
+*/
+
 package main
 
 import (

@@ -1,6 +1,6 @@
 /*
-	ResolveIP
-	go run ip_resolve.go www.google.com
+	ResolveTCP
+	go run tcp_resolve.go www.google.com:80
 */
 
 package main
@@ -19,11 +19,12 @@ func main() {
 	}
 	name := os.Args[1]
 
-	addr, err := net.ResolveIPAddr("ip", name)
+	tcpAddr, err := net.ResolveTCPAddr("tcp", name)
 	if err != nil {
 		fmt.Println("Resolution error", err.Error())
 		os.Exit(1)
 	}
-	fmt.Println("Resolved address is ", addr.String())
+	fmt.Println("Resolved address is ", tcpAddr.String())
+
 	os.Exit(0)
 }

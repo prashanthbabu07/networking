@@ -1,5 +1,7 @@
-/* LookupHost
- */
+/*
+	LookupHost
+	go run lookup_host.go www.google.com
+*/
 
 package main
 
