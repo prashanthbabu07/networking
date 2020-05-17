@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"time"
@@ -110,9 +111,13 @@ func main() {
 	// Start chatting.
 	go listen(conn)
 	for {
-		fmt.Print("Input message: ")
-		message := make([]byte, 2048)
-		fmt.Scanln(&message)
+		// fmt.Print("Input message: ")
+		// message := make([]byte, 2048)
+		// fmt.Scanln(&message)
+
+		datetime := time.Now().Local().String()
+		message := []byte("message " + datetime)
+
 		messageRequest := ChatRequest{
 			"Chat",
 			username,
@@ -124,6 +129,8 @@ func main() {
 			continue
 		}
 		conn.WriteToUDP(jsonRequest, peerAddr)
+
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 	}
 }
 
