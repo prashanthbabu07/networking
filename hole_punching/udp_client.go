@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -110,13 +111,18 @@ func main() {
 
 	// Start chatting.
 	go listen(conn)
+
+	seq := 0
+
 	for {
 		// fmt.Print("Input message: ")
 		// message := make([]byte, 2048)
 		// fmt.Scanln(&message)
 
+		seq = seq + 1
+
 		datetime := time.Now().Local().String()
-		message := []byte("message " + datetime)
+		message := []byte(strconv.Itoa(seq) + " message " + datetime)
 
 		messageRequest := ChatRequest{
 			"Chat",
@@ -130,7 +136,7 @@ func main() {
 		}
 		conn.WriteToUDP(jsonRequest, peerAddr)
 
-		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+		time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 	}
 }
 
