@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
+	"time"
 )
 
 var userIP map[string]string
@@ -27,6 +29,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	go sendServerMessage(conn)
 
 	for {
 		handleClient(conn)
@@ -64,7 +68,7 @@ func handleClient(conn *net.UDPConn) {
 
 		// Send message back
 		messageRequest := ChatRequest{
-			"Chat",
+			chatRequest.Action,
 			chatRequest.Username,
 			remoteAddr,
 		}
@@ -82,7 +86,7 @@ func handleClient(conn *net.UDPConn) {
 		}
 
 		messageRequest := ChatRequest{
-			"Chat",
+			chatRequest.Action,
 			chatRequest.Username,
 			peerAddr,
 		}
@@ -97,4 +101,37 @@ func handleClient(conn *net.UDPConn) {
 		}
 	}
 	fmt.Println("User table:", userIP)
+}
+
+func sendServerMessage(conn *net.UDPConn) {
+	for {
+		seq := 1
+		for user, ip := range userIP {
+			messageResponse := ChatRequest{
+				"Chat",
+				user,
+				"Server message - " + strconv.Itoa(seq),
+			}
+			jsonRequest, err := json.Marshal(&messageResponse)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+
+			addr, err := net.ResolveUDPAddr("udp4", ip)
+			if err != nil {
+				log.Print("Resolve peer address failed.")
+				log.Fatal(err)
+				continue
+			}
+
+			_, err = conn.WriteToUDP(jsonRequest, addr)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+			fmt.Println(user, ip)
+		}
+		time.Sleep(5 * time.Second)
+	}
 }
